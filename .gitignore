@@ -1,1 +1,29 @@
-node_modules
+# Node modules
+**/node_modules/
+
+
+# Environment files
+.env
+.env.*
+
+# Build output
+dist/
+build/
+
+# Logs
+logs/
+*.log
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Test coverage
+coverage/
+
+# Database dumps
+*.sql
+*.sqlite
+*.db
