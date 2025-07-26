@@ -13,3 +13,8 @@ create table user{
 
 insert into user( name, password, email, role, phone)
 values ('user','user123','user@gmail.com','admin', '0717594343')
+
+ALTER TABLE user 
+  ADD COLUMN reset_token_hash VARCHAR(255) NULL,
+  ADD COLUMN reset_token_expires DATETIME NULL,
+  ADD COLUMN password_updated_at DATETIME NULL;
