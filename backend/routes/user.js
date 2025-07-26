@@ -3,10 +3,8 @@ const cors = require('cors');
 const connection = require('../connection');
 const router = express.Router();
 
-router.get('/', cors(), async (req, res) => {
-    const [rows] = await connection.query('SELECT * FROM user');
-    res.json(rows);
-});
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 router.post('/signup',(req, res) => {
     let user = req.body;
@@ -29,7 +27,32 @@ router.post('/signup',(req, res) => {
             }
         }
     });
-    
+});
+
+router.post('/login',(req,res)=>{
+    const user = req.body;
+    query = 'select * from user where email = ?';
+    connection.query(query,[user.email],(err,result)=>{
+        if(err){
+            return res.status(500).json({ error: 'Database query failed', details: err });
+        }else{
+            if(result.length > 0 || (result[0].password == user.password)){
+                if(result[0].status === 'active'){
+                    const responce = {email: result[0].email, role: result[0].role};
+                    const accessToken = jwt.sign(responce, process.env.ACCESS_TOKEN, { expiresIn: '1h' });
+                    res.status(200).json({
+                        message: 'Login successful',
+                        accessToken: accessToken,
+                        role: result[0].role
+                    });
+                }else{
+                    return res.status(403).json({ error: 'User is inactive' });
+                }
+            }else{
+                return res.status(401).json({ error: 'Invalid email or password' });
+            }
+        }
+    });
 });
 
 module.exports = router; 
